@@ -1,0 +1,20 @@
+groups:
+  - name: node_alerts
+    rules:
+      - alert: NodeExporterDown
+        expr: up{job="node"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Node Exporter down"
+          description: "Node exporter on {{ $labels.instance }} is not responding"
+
+      - alert: HighCPUUsage
+        expr: (1 - avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m]))) * 100 > 50
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage"
+          description: "Instance {{ $labels.instance }} CPU > 50% for 5m"

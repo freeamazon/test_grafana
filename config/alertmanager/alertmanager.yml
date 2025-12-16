@@ -1,0 +1,19 @@
+global:
+  resolve_timeout: 5m
+  smtp_smarthost: 'smtp.gmail.com:587'
+  smtp_from: 'adityathakare9325@gmail.com'
+  smtp_auth_username: 'adityathakare9325@gmail.com'
+  smtp_auth_password: 'password'   # Gmail App Password
+  smtp_require_tls: true
+
+route:
+  receiver: email-alerts
+  group_wait: 10s
+  group_interval: 1m
+  repeat_interval: 10m
+
+receivers:
+  - name: email-alerts
+    email_configs:
+      - to: 'aids5757@gmail.com'
+        send_resolved: true

@@ -1,0 +1,17 @@
+# Runtime data
+prometheus-data/
+loki-data/
+alertmanager-data/
+promtail-data/
+grafana-storage/
+
+# Grafana runtime DB
+config/grafana/grafana.db
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+*.swp
+*.swo

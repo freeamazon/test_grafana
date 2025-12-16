@@ -1,0 +1,82 @@
+server:
+  http_listen_port: 3100
+  grpc_listen_port: 9095
+
+positions:
+  filename: /promtail/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+
+scrape_configs:
+  - job_name: local
+    static_configs:
+      - targets: ['localhost']
+        labels:
+          job: logs
+          __path__: /var/log/**/*.log
+
+    pipeline_stages:
+      - regex:
+          expression: '^(?P<ip>[^ ]*) [^ ]* [^ ]* \[(?P<time>[^\]]*)\] "(?P<method>[A-Z]+) (?P<path>[^"]*) HTTP[^"]*" (?P<status>\d{3}) (?P<size>\d+)'
+      - labels:
+          ip:
+          method:
+          path:
+          status:
+          size:
+
+  - job_name: nginx
+    static_configs:
+      - targets: ['localhost']
+        labels:
+          job: nginx
+          __path__: /var/log/nginx/*.log
+
+    pipeline_stages:
+      - regex:
+          expression: '^(?P<ip>[^ ]*) [^ ]* [^ ]* \[(?P<time>[^\]]*)\] "(?P<method>[A-Z]+) (?P<path>[^"]*) HTTP[^"]*" (?P<status>\d{3}) (?P<size>\d+)'
+      - labels:
+          ip:
+          method:
+          path:
+          status:
+          size:
+
+  - job_name: apache
+    static_configs:
+      - targets: ['localhost']
+        labels:
+          job: apache
+          __path__: /var/log/apache2/*.log
+
+    pipeline_stages:
+      - regex:
+          expression: '^(?P<ip>[^ ]*) [^ ]* [^ ]* \[(?P<time>[^\]]*)\] "(?P<method>[A-Z]+) (?P<path>[^"]*) HTTP[^"]*" (?P<status>\d{3}) (?P<size>\d+)'
+      - labels:
+          ip:
+          method:
+          path:
+          status:
+          size:
+
+  - job_name: koha
+    static_configs:
+      - targets: ['localhost']
+        labels:
+          job: koha
+          __path__: /var/log/koha/**/*.log
+
+      - targets: ['localhost']
+        labels:
+          job: koha
+          __path__: /var/log/koha/**/*_log
+
+    pipeline_stages:
+      # Koha logs do NOT always follow HTTP format. Use a safe catch-all.
+      - regex:
+          expression: '^(?P<time>[A-Za-z0-9: ,.-]+)?.*?(?P<level>ERROR|WARN|INFO)?.*?(?P<message>.*)$'
+      - labels:
+          time:
+          level:
+          message:

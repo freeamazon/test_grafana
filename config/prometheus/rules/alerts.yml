@@ -1,0 +1,129 @@
+groups:
+  - name: system_alerts
+    rules:
+
+      - alert: InstanceDown
+        expr: up == 0
+        for: 5s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Server is DOWN"
+          description: "Instance {{ $labels.instance }} is not reachable."
+
+      - alert: HighCPU
+        expr: avg by(instance) (rate(node_cpu_seconds_total{mode!="idle"}[2m])) > 0.60
+        for: 5s
+        labels:
+          severity: critical
+        annotations:
+          summary: "High CPU usage"
+          description: "CPU usage >60% on {{ $labels.instance }}"
+
+      - alert: CPUBusy
+        expr: (1 - avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[1m]))) * 100 > 50
+        for: 5s
+        labels:
+          severity: warning
+        annotations:
+          summary: "CPU Busy"
+          description: "CPU busy >50% on {{ $labels.instance }} (non-idle CPU time)"
+
+      - alert: HighMemory
+        expr: node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes < 0.15
+        for: 5s
+        labels:
+          severity: warning
+        annotations:
+          summary: "Low memory"
+          description: "Available memory below 15% on {{ $labels.instance }}"
+
+      - alert: HighDisk
+        expr: node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"} < 0.15
+        for: 5s
+        labels:
+          severity: warning
+        annotations:
+          summary: "Low disk space"
+          description: "Disk below 15% on {{ $labels.instance }}"
+
+      - alert: HighLoadMajor
+        expr: node_load1 > 1.0
+        for: 5s
+        labels:
+          severity: major
+        annotations:
+          summary: "High Load Average (Major)"
+          description: "Load average {{ $value }} > 1.0 on {{ $labels.instance }}"
+
+      - alert: HighLoadCritical
+        expr: node_load1 > 2.0
+        for: 5s
+        labels:
+          severity: critical
+        annotations:
+          summary: "High Load Average (Critical)"
+          description: "Load average {{ $value }} > 2.0 on {{ $labels.instance }}"
+
+      - alert: PromtailDown
+        expr: up{job="promtail"} == 0
+        for: 5s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Promtail is DOWN"
+          description: "Promtail on {{ $labels.instance }} is not running — logs will not be pushed to Loki."
+
+      - alert: LokiDown
+        expr: up{job="loki"} == 0
+        for: 5s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Loki is DOWN"
+          description: "Loki log storage is unreachable at {{ $labels.instance }}."
+
+      - alert: ApacheDown
+        expr: up{job="apache"} == 0
+        for: 5s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Apache HTTPD is DOWN"
+          description: "Apache server {{ $labels.instance }} is not responding."
+
+      - alert: NginxDown
+        expr: up{job="nginx"} == 0
+        for: 5s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Nginx is DOWN"
+          description: "Nginx server {{ $labels.instance }} is not reachable."
+
+      - alert: MySQLDown
+        expr: up{job="mysql"} == 0
+        for: 5s
+        labels:
+          severity: critical
+        annotations:
+          summary: "MySQL is DOWN"
+          description: "MySQL database exporter on {{ $labels.instance }} is down."
+
+      - alert: HTTP5xxErrors
+        expr: sum by(instance) (rate({status=~"5.."}[5m])) > 1
+        for: 5s
+        labels:
+          severity: critical
+        annotations:
+          summary: "HTTP 5xx Server Errors"
+          description: "More than 1 server error (5xx) detected on {{ $labels.instance }}."
+
+      - alert: HTTP4xxErrors
+        expr: sum by(instance) (rate({status=~"4.."}[5m])) > 1
+        for: 5s
+        labels:
+          severity: warning
+        annotations:
+          summary: "HTTP 4xx Client Errors"
+          description: "More than 1 client error (4xx) detected on {{ $labels.instance }}."

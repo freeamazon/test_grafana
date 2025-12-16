@@ -1,0 +1,55 @@
+global:
+  scrape_interval: 5s
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: ['alertmanager:9093']
+
+rule_files:
+  - /etc/prometheus/rules/*.yml
+
+scrape_configs:
+
+  # Node Exporter on HOST
+  - job_name: 'node'
+    static_configs:
+      - targets: ['192.168.1.16:9100']
+        labels:
+          name: 'localhost-node'
+
+      - targets: ['103.102.234.16:9100']
+        labels:
+          name: 'test-instance2'
+
+#      - targets: ['192.168.1.16:9103']
+#        labels:
+#          name: 'test-instance3'
+
+
+  # Loki metrics
+  - job_name: 'loki'
+    static_configs:
+      - targets: ['loki:3100']
+
+  # Promtail metrics
+  - job_name: 'promtail'
+    static_configs:
+      - targets: ['promtail:3100']
+
+  # Alertmanager metrics
+  - job_name: 'alertmanager'
+    static_configs:
+      - targets: ['alertmanager:9093']
+
+  # Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['prometheus:9090']
+
+  # Remote Loki metrics (external site)
+#  - job_name: 'remote-loki'
+#    static_configs:
+#      - targets: ['103.102.234.16:3100']
+#        labels:
+#          site: 'remote-loki'
