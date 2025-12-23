@@ -10,30 +10,6 @@ Loki	Log aggregation backend
 Promtail	Log shipping agent (system, nginx, apache, koha)
 Node Exporter	System-level metrics (CPU, RAM, Disk, Load)
 
-📁 Repository Structure
-monitoring-stack/
-├── docker-compose.yml
-├── config/
-│   ├── prometheus/
-│   │   ├── prometheus.yml
-│   │   └── rules/
-│   │       ├── alerts.yml
-│   │       └── alert-rules.yml
-│   ├── alertmanager/
-│   │   └── alertmanager.yml
-│   ├── promtail/
-│   │   └── promtail-config.yml
-│   ├── loki/
-│   │   └── loki-config.yml
-│   └── grafana/
-│       ├── provisioning/
-│       └── plugins/
-├── prometheus-data/        # Runtime data (auto-created)
-├── loki-data/              # Runtime data (auto-created)
-├── alertmanager-data/      # Runtime data (auto-created)
-├── promtail-data/          # Runtime data (auto-created)
-├── grafana-storage/        # Grafana database & dashboards
-└── README.md
 ⚠️ Note: Runtime data directories are generated automatically. Do not manually edit files inside them.
 
 🚀 How to Run
@@ -47,8 +23,6 @@ docker --version
 docker compose version
 
 2️⃣ Clone Repository
-git clone git@github.com:freeamazon/monitoring-stack.git
-cd monitoring-stack
 
 3️⃣ Create Required Directories
 mkdir -p prometheus-data loki-data alertmanager-data promtail-data grafana-storage
@@ -131,10 +105,6 @@ Possible causes: - Time drift between servers - Old Prometheus data after config
 Fix:
 rm -rf prometheus-data/*
 docker compose restart prometheus
-
-📦 Portable Backup
-To create portable archive:
-tar -czvf monitoring-stack-portable.tar.gz monitoring-stack/
 
 ✅ Summary
 ✔ Local & remote monitoring ✔ Log aggregation (Koha-ready) ✔ Email alerting ✔ Dockerized & portable ✔ Production-ready structure
