@@ -1,17 +1,50 @@
-# Runtime data
+############################
+# Runtime / Generated Data
+############################
+
+# Prometheus data
 prometheus-data/
+
+# Loki data
 loki-data/
+
+# Alertmanager data
 alertmanager-data/
+
+# Promtail positions
 promtail-data/
-grafana-storage/
 
-# Grafana runtime DB
-config/grafana/grafana.db
+############################
+# Grafana runtime (VERY IMPORTANT)
+############################
 
+# Grafana database, plugins, exports, temp files
+config/grafana/
+
+############################
+# Archives / temp files
+############################
+
+*.tar.gz
+*.zip
+*.bak
+
+# Accidental files created by tools
+1.0
+2.0
+
+############################
 # Logs
+############################
+
 *.log
 
-# OS
+############################
+# OS / Editor junk
+############################
+
 .DS_Store
+Thumbs.db
 *.swp
 *.swo
+*~
